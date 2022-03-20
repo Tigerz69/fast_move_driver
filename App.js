@@ -11,7 +11,7 @@ import Register from './pages/Registration'
 import Account from './pages/Account'
 import Edit from './pages/Edit'
 import Finding from './pages/Finding';
-
+import ExtendDetail from './pages/ExtendDetail';
 
 
 import configureStore from './Store'
@@ -43,6 +43,10 @@ const EditScreen=({navigation})=>(
 
 const FindingScreen=({navigation})=>(
   <Finding navigation={navigation}/>
+)
+
+const ExtendDetailScreen=({navigation,route})=>(
+  <ExtendDetail navigation={navigation} route={route}/>
 )
 
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]);
@@ -89,7 +93,7 @@ const MyStack = ()=>(
       options={{ headerStyle: {backgroundColor: 'pink'},headerTintColor: 'white'}}/>
     <Stack.Screen name='DrawerTab' component={MyDrawer} options={{headerShown:false}}/>
     <Stack.Screen name='Login' component={LoginScreen} options={{headerShown:false}}/>
-    
+    <Stack.Screen name='ExtendDetail' component={ExtendDetail} options={{headerShown:false}}/>
     
     
   </Stack.Navigator>
