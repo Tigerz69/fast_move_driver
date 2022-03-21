@@ -84,20 +84,22 @@ const MyDrawer=()=> (
   
 )
 
-// const Tab = createBottomTabNavigator();
-// const TopTab = createMaterialTopTabNavigator();
-// function MyTabs() {
-//   return (
+const Tab = createBottomTabNavigator();
+const TopTab = createMaterialTopTabNavigator();
+const MyTabs=()=> {
+  return (
     
-//       <Tab.Navigator>
-//         <Tab.Screen name="Finding" component={FindingScreen} />
-//         <Tab.Screen name="History" component={HistoryScreen} />
-//         <Tab.Screen name="Setting" component={EditScreen} />
-//       </Tab.Navigator>
+      <Tab.Navigator>
+        <Tab.Screen name="Finding" component={FindingScreen} />
+        <Tab.Screen name="History" component={HistoryScreen} />
+        
+        
+        <Tab.Screen name="Setting" component={AccountScreen} />
+      </Tab.Navigator>
     
    
-//   );
-// }
+  );
+}
 
 
 const Stack = createStackNavigator();
@@ -112,10 +114,10 @@ const MyStack = ()=>(
       name='Recover' 
       component={RecoverScreen} 
       options={{ headerStyle: {backgroundColor: 'pink'},headerTintColor: 'white'}}/>
-    <Stack.Screen name='DrawerTab' component={MyDrawer} options={{headerShown:false}}/>
+    
     <Stack.Screen name='Login' component={LoginScreen} options={{headerShown:false}}/>
     <Stack.Screen name='ExtendDetail' component={ExtendDetailScreen} options={{headerShown:false}}/>
-    
+    <Stack.Screen name='MyTabs' component={MyTabs} options={{headerShown:false}}/>
     
   </Stack.Navigator>
 )

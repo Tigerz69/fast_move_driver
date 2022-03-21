@@ -43,7 +43,7 @@ class History extends Component {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,marginTop: StatusBar.currentHeight || 0}}>
             
-            <text>History</text>
+            <Text>History</Text>
     
             
           

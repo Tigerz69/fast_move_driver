@@ -53,7 +53,52 @@ class Finding extends Component{
     onRefresh =  () => {
      this.setState({refreshing:true})
      this._getLocationAsync()
-      .then(() => this.setState({refreshing:false},
+      .then(() => firebase.firestore().collection("orders").where("status","==","unmatch").orderBy("getTime", "asc").get().then((querySnapshot) => {
+        var that = this
+        let orders = [];
+        console.log('before foreach')
+        querySnapshot.forEach((doc) => {
+            console.log('id doc',doc.id)
+            console.log('location from local',this.state.location)
+            //console.log(doc.data()) 
+              let loc = this.state.location
+              console.log(loc)
+              let orilat=loc.coords.latitude
+              let orilng=loc.coords.longitude
+              let deslat=doc.data().wayPointList[0].region.latitude
+              let deslng=doc.data().wayPointList[0].region.longitude
+
+              let config = {
+                method: 'get',
+                url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
+                headers:{}
+              };
+
+              axios(config).then((response)=>{
+                let data_temp =(JSON.parse(JSON.stringify(response.data)))
+                console.log(data_temp);
+                if(data_temp.rows[0].elements[0].distance.value<=10000){
+                  orders.push(doc.data()); 
+                  this.setState({orders:orders})
+                  
+                }else{
+                  this.setState({orders:orders})
+                }
+  
+              }).catch(function (error) {
+                console.log(error);
+              })
+            
+        })  
+           
+        
+        // Promise.all(this.state.promises).then(function(data){
+        //   that.setState({orders:orders})
+        //   console.log("orders list",that.state.orders)
+        // })   
+        
+    }),
+      this.setState({refreshing:false},
       console.log('orders in list state',this.state.orders)
       ))
     }
@@ -131,43 +176,43 @@ class Finding extends Component{
         this.setState({selectedID:id})
         console.log(id)
       }
-    renderItem=({item})=>{
+    // renderItem=({item})=>{
 
         
     
-        let num =item.gnome.length
-        let arr=[]
-        for(let i=0;i<num;i++)
-        {
-            arr.push(
-                <Paragraph>{`จุดที่ ${i+1} `+item.wayPointList[i].address}</Paragraph>
-            )
-        }
-        return(
-            <View style={{padding:8}}>
-              <Card 
-              >
-                <Card.Title title={item.distance+" Km     "+this.renderTime(item.getTime)} 
-                />
-                <Card.Content>
-                  <Title>ลำดับจุดส่ง</Title>
-                  {arr}
-                  <Paragraph>{"ราคา : "+item.price} </Paragraph>
+    //     let num =item.gnome.length
+    //     let arr=[]
+    //     for(let i=0;i<num;i++)
+    //     {
+    //         arr.push(
+    //             <Paragraph>{`จุดที่ ${i+1} `+item.wayPointList[i].address}</Paragraph>
+    //         )
+    //     }
+    //     return(
+    //         <View style={{padding:8}}>
+    //           <Card 
+    //           >
+    //             <Card.Title title={item.distance+" Km     "+this.renderTime(item.getTime)} 
+    //             />
+    //             <Card.Content>
+    //               <Title>ลำดับจุดส่ง</Title>
+    //               {arr}
+    //               <Paragraph>{"ราคา : "+item.price} </Paragraph>
                   
-                </Card.Content>
-                <Card.Actions style={{justifyContent:'space-between'}}>
-                  <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('ExtendDetail',{item:item,num:num,time:this.renderTime(item.getTime)})}><Text>เพิ่มเติม</Text>
-                  </TouchableOpacity> 
-                  <TouchableOpacity style={styles.button} onPress={() =>this.showAlertConfirm(item.id)}  ><Text>รับงาน</Text>
-                  </TouchableOpacity>
-                </Card.Actions>
+    //             </Card.Content>
+    //             <Card.Actions style={{justifyContent:'space-between'}}>
+    //               <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('ExtendDetail',{item:item,num:num,time:this.renderTime(item.getTime)})}><Text>เพิ่มเติม</Text>
+    //               </TouchableOpacity> 
+    //               <TouchableOpacity style={styles.button} onPress={() =>this.showAlertConfirm(item.id)}  ><Text>รับงาน</Text>
+    //               </TouchableOpacity>
+    //             </Card.Actions>
                 
-              </Card>
+    //           </Card>
     
-            </View>
+    //         </View>
         
-        );
-      }
+    //     );
+    //   }
       renderSeperator=()=>{
         return(
           <View style={{height:1,backgroundColor:'#dddddd'}}>
@@ -271,6 +316,8 @@ class Finding extends Component{
                     orders.push(doc.data()); 
                     this.setState({orders:orders})
                     
+                  }else{
+                    this.setState({orders:orders})
                   }
     
                 }).catch(function (error) {
@@ -299,8 +346,43 @@ class Finding extends Component{
                     
                     <FlatList
                         data={this.state.orders}
-                        renderItem={this.renderItem
+                        renderItem={({ item }) =>{
+                        let num =item.gnome.length
+                        console.log('item wayPoint',item)
+                        let arr=[]
+                        for(let i=0;i<num;i++)
+                        {
+                            arr.push(
+                                <Paragraph>{`จุดที่ ${i+1} `+item.wayPointList[i].address}</Paragraph>
+                            )
                         }
+                        return(
+                            <View style={{padding:8}}>
+                              <Card 
+                              >
+                                <Card.Title title={item.distance+" Km     "+this.renderTime(item.getTime)} 
+                                />
+                                <Card.Content>
+                                  <Title>ลำดับจุดส่ง</Title>
+                                  {arr}
+                                  <Paragraph>{"ราคา : "+item.price} </Paragraph>
+                                  
+                                </Card.Content>
+                                <Card.Actions style={{justifyContent:'space-between'}}>
+                                  <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('ExtendDetail',{item:item,num:num,time:this.renderTime(item.getTime)})}><Text>เพิ่มเติม</Text>
+                                  </TouchableOpacity> 
+                                  <TouchableOpacity style={styles.button} onPress={() =>this.showAlertConfirm(item.id)}  ><Text>รับงาน</Text>
+                                  </TouchableOpacity>
+                                </Card.Actions>
+                                
+                              </Card>
+                    
+                            </View>
+                        
+                        )
+      
+              
+                      }}
                         ItemSeparatorComponent={this.renderSeperator}
                         ListHeaderComponent={this.renderHeader}
                         refreshControl={

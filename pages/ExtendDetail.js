@@ -76,7 +76,7 @@ class ExtendDetail extends Component {
         [  
               
               
-              {text: 'Ok', onPress: () => console.log('Ok Pressed')} 
+              {text: 'Ok', onPress:() => this.props.navigation.navigate('MyTabs')}
         ]  
     );  
   }  

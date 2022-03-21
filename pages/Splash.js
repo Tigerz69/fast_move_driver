@@ -28,7 +28,7 @@ class Splash extends Component {
        id:this.state.id
     }
     this.props.add(item)
-    this.props.navigation.navigate('DrawerTab')
+    this.props.navigation.navigate('MyTabs')
   }
 
   getUserUnsuccess=(error)=>{
