@@ -127,7 +127,7 @@ class ExtendDetail extends Component {
                 </Card.Content>
                 <Card.Actions style={{justifyContent:'space-between'}}>
                   
-                  <TouchableOpacity style={styles.button} onPress={()=>this.showAlertConfirm(item.id)}  ><Text>รับงาน</Text>
+                  <TouchableOpacity style={styles.button} onPress={()=>this.showAlertConfirm(item.id)}  ><Text style={styles.button}>รับงาน</Text>
                   </TouchableOpacity>
                 </Card.Actions>
                 
@@ -143,6 +143,11 @@ class ExtendDetail extends Component {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10
+  },
   
 });
 

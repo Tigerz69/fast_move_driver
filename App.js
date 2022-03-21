@@ -13,8 +13,14 @@ import Edit from './pages/Edit'
 import Finding from './pages/Finding';
 import ExtendDetail from './pages/ExtendDetail';
 import History from './pages/History';
+import CurrentJob from './pages/CurrentJob';
+import SuccessJob from './pages/SuccessJob';
+import CancelJob from './pages/CancelJob';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+
 
 import configureStore from './Store'
 import {Provider} from 'react-redux'
@@ -54,6 +60,20 @@ const HistoryScreen=({navigation})=>(
   <History navigation={navigation}/>
 )
 
+const CurrentJobScreen=({navigation})=>(
+  <CurrentJob navigation={navigation}/>
+)
+
+const SuccessJobScreen=({navigation})=>(
+  <SuccessJob navigation={navigation}/>
+)
+
+const CancelJobScreen=({navigation})=>(
+  <CancelJob navigation={navigation}/>
+)
+
+
+
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]);
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
@@ -83,15 +103,29 @@ const MyDrawer=()=> (
   </Drawer.Navigator>
   
 )
+const TopTab = createMaterialTopTabNavigator();
+const MyTopTabs=()=>{
+  return(
+    <TopTab.Navigator>
+        <TopTab.Screen name="CurrentJob" component={CurrentJobScreen} />
+        <TopTab.Screen name="SuccessJob" component={SuccessJobScreen} />
+        
+        
+        <TopTab.Screen name="CancelJob" component={CancelJobScreen} />
+    </TopTab.Navigator>
+  )
+}
+
+
 
 const Tab = createBottomTabNavigator();
-const TopTab = createMaterialTopTabNavigator();
+
 const MyTabs=()=> {
   return (
     
       <Tab.Navigator>
         <Tab.Screen name="Finding" component={FindingScreen} />
-        <Tab.Screen name="History" component={HistoryScreen} />
+        <Tab.Screen name="History" component={MyTopTabs} />
         
         
         <Tab.Screen name="Setting" component={AccountScreen} />
