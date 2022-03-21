@@ -6,7 +6,9 @@ import {
   TextInput,
   StyleSheet,
   StatusBar,
-  Alert
+  Alert,
+  FlatList,
+  RefreshControl
 } from 'react-native';
 import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
 
@@ -18,12 +20,97 @@ class SuccessJob extends Component {
     super(props);
     this.db = firebase.firestore();
      this.state = {
-       
+       orders:null,
+       refreshing:false
     };
+  }
+  onRefresh =  () => {
+    this.setState({refreshing:true})
+    let user = auth.getCurrentUser() 
+    let driverid = user.uid
+    firebase.firestore().collection("orders").where("status","==","success").where("driverID", "==",driverid).get().then((querySnapshot) => {
+        
+        let orders = [];
+        console.log('before foreach')
+        querySnapshot.forEach((doc) => {
+            console.log('id doc',doc.id)
+            orders.push(doc.data())
+            //console.log(doc.data()) 
+            this.setState({orders:orders})
+            
+        })  
+           
+        
+        // Promise.all(this.state.promises).then(function(data){
+        //   that.setState({orders:orders})
+        //   console.log("orders list",that.state.orders)
+        // })   
+        
+    })  
+          
+       
+       // Promise.all(this.state.promises).then(function(data){
+       //   that.setState({orders:orders})
+       //   console.log("orders list",that.state.orders)
+       // })   
+    
+     this.setState({refreshing:false},()=>
+     console.log('orders in list state',this.state.orders))
+     
+   }
+   renderSeperator=()=>{
+    return(
+      <View style={{height:1,backgroundColor:'#dddddd'}}>
+      </View>
+    );
+  }
+  renderHeader=()=>{
+    return(
+      <View style={{alignItems:'center'}}>
+          
+          <Text >pull to refresh</Text></View>
+    
+    );
+  }
+  renderTime=(time)=>{
+      let tempdate = new Date(time)
+      var date =tempdate.getDate()
+      var month = tempdate.getMonth()+1
+      var years = tempdate.getFullYear()
+      var hour = tempdate.getHours()
+      var minute = tempdate.getMinutes()
+      if (hour < 10){
+        hour = '0'+hour
+      }
+      
+      if (minute < 10){
+        minute = '0'+minute
+      }
+      return `${date}/${month}/${years}    ${hour}:${minute}`
   }
   
   componentDidMount() {
-   
+    let user = auth.getCurrentUser() 
+    let driverid = user.uid
+    firebase.firestore().collection("orders").where("status","==","success").where("driverID", "==",driverid).get().then((querySnapshot) => {
+        
+        let orders = [];
+        console.log('before foreach')
+        querySnapshot.forEach((doc) => {
+            console.log('id doc',doc.id)
+            orders.push(doc.data())
+            //console.log(doc.data()) 
+            this.setState({orders:orders})
+            
+        })  
+           
+        
+        // Promise.all(this.state.promises).then(function(data){
+        //   that.setState({orders:orders})
+        //   console.log("orders list",that.state.orders)
+        // })   
+        
+    })
   }
 
   
@@ -41,15 +128,57 @@ class SuccessJob extends Component {
     //     }
     //console.log(route.params.item,route.params.num)
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,marginTop: StatusBar.currentHeight || 0}}>
-            
-            <Text>SuccessJob</Text>
-    
-            
-          
+        <View style={{paddingTop:StatusBar.currentHeight,flex:1}}>
+                    
+                    <FlatList
+                        data={this.state.orders}
+                        renderItem={({ item }) =>{
+                        let num =item.gnome.length
+                        console.log('item wayPoint',item)
+                        let arr=[]
+                        for(let i=0;i<num;i++)
+                        {
+                            arr.push(
+                                <Paragraph>{`จุดที่ ${i+1} `+item.wayPointList[i].address}</Paragraph>
+                            )
+                        }
+                        return(
+                            <View style={{padding:8}}>
+                              <Card 
+                              >
+                                <Card.Title title={item.distance+" Km     "+this.renderTime(item.getTime)} 
+                                />
+                                <Card.Content>
+                                  <Title>ลำดับจุดส่ง</Title>
+                                  {arr}
+                                  <Paragraph>{"ราคา : "+item.price} </Paragraph>
+                                  
+                                </Card.Content>
+                                <Card.Actions style={{justifyContent:'space-between'}}>
+                                  
+                                  
+                                </Card.Actions>
+                                
+                              </Card>
+                    
+                            </View>
+                        
+                        )
+      
+              
+                      }}
+                        ItemSeparatorComponent={this.renderSeperator}
+                        ListHeaderComponent={this.renderHeader}
+                        refreshControl={
+                          <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+                        }
 
-
-        </View>
+                        keyExtractor={(item)=>item.id}
+                        
+                        ref={(ref)=>{this.myRef=ref}}
+                    />
+                    
+                </View>
     );
   }
 }

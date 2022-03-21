@@ -16,11 +16,12 @@ import History from './pages/History';
 import CurrentJob from './pages/CurrentJob';
 import SuccessJob from './pages/SuccessJob';
 import CancelJob from './pages/CancelJob';
-
+import FullDetail from './pages/FullDetail'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
-
+import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import configureStore from './Store'
 import {Provider} from 'react-redux'
@@ -70,6 +71,10 @@ const SuccessJobScreen=({navigation})=>(
 
 const CancelJobScreen=({navigation})=>(
   <CancelJob navigation={navigation}/>
+)
+
+const FullDetailScreen=({navigation,route})=>(
+  <FullDetail navigation={navigation}route={route}/>
 )
 
 
@@ -124,11 +129,20 @@ const MyTabs=()=> {
   return (
     
       <Tab.Navigator>
-        <Tab.Screen name="Finding" component={FindingScreen} />
-        <Tab.Screen name="History" component={MyTopTabs} />
+        <Tab.Screen name="Finding" component={FindingScreen} options={{tabBarLabel: 'Finding',
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="find" size={24} color="black" />
+          ),}} />
+        <Tab.Screen name="History" component={MyTopTabs} options={{tabBarLabel: 'History',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="history" size={24} color="black" />
+          ),}} />
         
         
-        <Tab.Screen name="Setting" component={AccountScreen} />
+        <Tab.Screen name="Setting" component={AccountScreen} options={{tabBarLabel: 'Setting',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="ios-settings-outline" size={24} color="black" />
+          ),}} />
       </Tab.Navigator>
     
    
@@ -152,7 +166,7 @@ const MyStack = ()=>(
     <Stack.Screen name='Login' component={LoginScreen} options={{headerShown:false}}/>
     <Stack.Screen name='ExtendDetail' component={ExtendDetailScreen} options={{headerShown:false}}/>
     <Stack.Screen name='MyTabs' component={MyTabs} options={{headerShown:false}}/>
-    
+    <Stack.Screen name='FullDetail' component={FullDetailScreen} options={{headerShown:false}}/>
   </Stack.Navigator>
 )
 
