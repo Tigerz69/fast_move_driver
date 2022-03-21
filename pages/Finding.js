@@ -18,7 +18,6 @@ import Loading from './Loading';
 const LOCATION_TASK_NAME = "background-location-task";
 const apiKey="AIzaSyCfjk1u2VcAvNfK31VMN581MMNePvR2J-k";
 const Distance_URL="https://maps.googleapis.com/maps/api/distancematrix/json"
-var location=null
 
 
 
@@ -35,7 +34,10 @@ class Finding extends Component{
          loading:false,
          updateLo:false,
          promises:[],
-         refreshing:false
+         refreshing:false,
+         location:null,
+         errorMessage: null,
+         locationloaded: false
         };
          
     }
@@ -50,57 +52,12 @@ class Finding extends Component{
   
     onRefresh =  () => {
      this.setState({refreshing:true})
-
-     firebase.firestore().collection("orders").where("status","==","unmatch").orderBy("getTime", "asc").get().then((querySnapshot) => {
-      //var that = this
-      let orders = [];
-      console.log('before foreach')
-      querySnapshot.forEach((doc) => {
-          console.log('location from global',location)
-          //console.log(doc.data())
-
-            let orilat=location.latitude
-            let orilng=location.longitude
-            let deslat=doc.data().wayPointList[0].region.latitude
-            let deslng=doc.data().wayPointList[0].region.longitude
-
-            let config = {
-              method: 'get',
-              url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
-              headers:{}
-            };
-
-            axios(config).then((response)=>{
-              let data_temp =(JSON.parse(JSON.stringify(response.data)))
-              console.log(data_temp);
-              if(data_temp.rows[0].elements[0].distance.value<=10000){
-                orders.push(doc.data()); 
-                this.setState({orders:orders})
-                
-              }else{
-                this.setState({orders:orders})
-              }
-
-            }).catch(function (error) {
-              console.log(error);
-            })
-          
-          
-          
-      
-      // Promise.all(this.state.promises).then(function(data){
-      //   that.setState({orders:orders})
-      //   console.log("orders list",that.state.orders)
-      // })   
-      
-      });
-      //console.log("Current orders: ", orders.join(", "));
-      
-    }).then(() => this.setState({refreshing:false},
+     this._getLocationAsync()
+      .then(() => this.setState({refreshing:false},
       console.log('orders in list state',this.state.orders)
       ))
-
-  }
+    }
+  
 
   showAlertConfirm(id) {  
     Alert.alert(  
@@ -120,7 +77,7 @@ class Finding extends Component{
         [  
               
               
-              {text: 'Ok', onPress: () => console.log('Ok Pressed')} 
+              {text: 'Ok', onPress: () => this.props.navigation.navigate('MyTabs')} 
         ]  
     );  
   }  
@@ -256,96 +213,84 @@ class Finding extends Component{
           ]  
       );  
     }  
-
-    
-
-
-
-
-
-    componentDidMount=async()=>{
-        // Asking for device location permission
-      const { status } = await Location.requestBackgroundPermissionsAsync();
+    _getLocationAsync = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
       console.log(status)
       if (status !== 'granted') {
-        this.showAlert()
+        
+          console.log('Permission to access location was denied')
+         
+        
       } else {
         console.log('in else')
-        //this.setState({updateLo:true})
-        await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-          accuracy: Location.Accuracy.BestForNavigation ,
-          timeInterval: 30000, //3min=180000
-          //distanceInterval:1
-        }).then(()=>{
-          firebase.firestore().collection("orders").where("status","==","unmatch").orderBy("getTime", "asc").get().then((querySnapshot) => {
-            var that = this
-            let orders = [];
-            console.log('before foreach')
-            querySnapshot.forEach((doc) => {
-                console.log('id doc',doc.id)
-                console.log('location from global',location)
-                //console.log(doc.data())
-  
-                  let orilat=location.latitude
-                  let orilng=location.longitude
-                  let deslat=doc.data().wayPointList[0].region.latitude
-                  let deslng=doc.data().wayPointList[0].region.longitude
-  
-                  let config = {
-                    method: 'get',
-                    url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
-                    headers:{}
-                  };
-  
-                  axios(config).then((response)=>{
-                    let data_temp =(JSON.parse(JSON.stringify(response.data)))
-                    console.log(data_temp);
-                    if(data_temp.rows[0].elements[0].distance.value<=10000){
-                      orders.push(doc.data()); 
-                      this.setState({orders:orders})
-                      
-                    }
-      
-                  }).catch(function (error) {
-                    console.log(error);
-                  })
-                
-                
-                
-            
-            // Promise.all(this.state.promises).then(function(data){
-            //   that.setState({orders:orders})
-            //   console.log("orders list",that.state.orders)
-            // })   
-            
-            });
-            //console.log("Current orders: ", orders.join(", "));
-            
+        Location.hasServicesEnabledAsync().then((data)=>{
+          console.log('service: ',data)
         })
-        })
-        //this.setState({updateLo:false})
+        // only check the location if it has been granted
+        // you also may want to wrap this in a try/catch as async functions can throw
+        let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true  })
+        this.setState({location})
+        let backPerm = await Location.requestBackgroundPermissionsAsync();
+        console.log(backPerm);
       }
-      // firebase.firestore().collection("test").where("temp","==","ok")
-      // .onSnapshot((querySnapshot)=>{
-      //   querySnapshot.forEach((doc) => {
-      //     console.log(doc.data())
-      //   })
-      // })
-      // firebase.firestore().collection("orders").onSnapshot((querySnapshot)=>{
-      //   var orders=[];
-      //   querySnapshot.forEach((doc)=>{
-      //     console.log(doc.data())
-      //     orders.push(doc.data())
-      //     this.setState({orders:orders})
-      //   })
-      // })
-      
-      
-      
-      //subscriber();  //unsubscrib
-       
-    }
+    };
     
+
+
+
+
+
+    componentDidMount=()=>{
+        // Asking for device location permission
+      this._getLocationAsync()
+        firebase.firestore().collection("orders").where("status","==","unmatch").orderBy("getTime", "asc").get().then((querySnapshot) => {
+          var that = this
+          let orders = [];
+          console.log('before foreach')
+          querySnapshot.forEach((doc) => {
+              console.log('id doc',doc.id)
+              console.log('location from local',this.state.location)
+              //console.log(doc.data()) 
+                let loc = this.state.location
+                console.log(loc)
+                let orilat=loc.coords.latitude
+                let orilng=loc.coords.longitude
+                let deslat=doc.data().wayPointList[0].region.latitude
+                let deslng=doc.data().wayPointList[0].region.longitude
+  
+                let config = {
+                  method: 'get',
+                  url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
+                  headers:{}
+                };
+  
+                axios(config).then((response)=>{
+                  let data_temp =(JSON.parse(JSON.stringify(response.data)))
+                  console.log(data_temp);
+                  if(data_temp.rows[0].elements[0].distance.value<=10000){
+                    orders.push(doc.data()); 
+                    this.setState({orders:orders})
+                    
+                  }
+    
+                }).catch(function (error) {
+                  console.log(error);
+                })
+              
+          })  
+             
+          
+          // Promise.all(this.state.promises).then(function(data){
+          //   that.setState({orders:orders})
+          //   console.log("orders list",that.state.orders)
+          // })   
+          
+      })
+    }
+      
+      
+    
+  
 
 
     render(){
@@ -354,7 +299,8 @@ class Finding extends Component{
                     
                     <FlatList
                         data={this.state.orders}
-                        renderItem={this.renderItem}
+                        renderItem={this.renderItem
+                        }
                         ItemSeparatorComponent={this.renderSeperator}
                         ListHeaderComponent={this.renderHeader}
                         refreshControl={
@@ -367,34 +313,34 @@ class Finding extends Component{
                     />
                     
                 </View>
-            );
+            )
         
     }
     
-}
+  }
 
-TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-  if (error) {
-    // Error occurred - check `error.message` for more details.
-    console.log("error", error);
-    return;
-  }
-  if (data) {
+// TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
+//   if (error) {
+//     // Error occurred - check `error.message` for more details.
+//     console.log("error", error);
+//     return;
+//   }
+//   if (data) {
     
-    const { locations } = data;
-    // do something with the locations captured in the background
-    console.log(locations[0].coords)
-    let templat = locations[0].coords.latitude;
-    let templng = locations[0].coords.longitude
-    let temp ={
-      latitude:templat,
-      longitude:templng
-    }
-    location=temp
+//     const { locations } = data;
+//     // do something with the locations captured in the background
+//     console.log(locations[0].coords)
+//     let templat = locations[0].coords.latitude;
+//     let templng = locations[0].coords.longitude
+//     let temp ={
+//       latitude:templat,
+//       longitude:templng
+//     }
+//     location=temp
     
-    console.log("locations", temp);
-  }
-});
+//     console.log("locations", temp);
+//   }
+// });
 
 const styles = StyleSheet.create({
   button: {

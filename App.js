@@ -12,7 +12,9 @@ import Account from './pages/Account'
 import Edit from './pages/Edit'
 import Finding from './pages/Finding';
 import ExtendDetail from './pages/ExtendDetail';
-
+import History from './pages/History';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import configureStore from './Store'
 import {Provider} from 'react-redux'
@@ -48,6 +50,9 @@ const FindingScreen=({navigation})=>(
 const ExtendDetailScreen=({navigation,route})=>(
   <ExtendDetail navigation={navigation} route={route}/>
 )
+const HistoryScreen=({navigation})=>(
+  <History navigation={navigation}/>
+)
 
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]);
 LogBox.ignoreLogs([
@@ -79,6 +84,22 @@ const MyDrawer=()=> (
   
 )
 
+// const Tab = createBottomTabNavigator();
+// const TopTab = createMaterialTopTabNavigator();
+// function MyTabs() {
+//   return (
+    
+//       <Tab.Navigator>
+//         <Tab.Screen name="Finding" component={FindingScreen} />
+//         <Tab.Screen name="History" component={HistoryScreen} />
+//         <Tab.Screen name="Setting" component={EditScreen} />
+//       </Tab.Navigator>
+    
+   
+//   );
+// }
+
+
 const Stack = createStackNavigator();
 const MyStack = ()=>(
   <Stack.Navigator>
@@ -93,7 +114,7 @@ const MyStack = ()=>(
       options={{ headerStyle: {backgroundColor: 'pink'},headerTintColor: 'white'}}/>
     <Stack.Screen name='DrawerTab' component={MyDrawer} options={{headerShown:false}}/>
     <Stack.Screen name='Login' component={LoginScreen} options={{headerShown:false}}/>
-    <Stack.Screen name='ExtendDetail' component={ExtendDetail} options={{headerShown:false}}/>
+    <Stack.Screen name='ExtendDetail' component={ExtendDetailScreen} options={{headerShown:false}}/>
     
     
   </Stack.Navigator>
