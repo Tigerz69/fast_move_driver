@@ -12,7 +12,7 @@ import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
 
 import auth from "../Firebase/Auth"
 import 'firebase/firestore';
-import firebase from "../Firebase/Initial";
+import firebase from 'firebase';
 class ExtendDetail extends Component {
   constructor(props){
     super(props);

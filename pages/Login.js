@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import auth from '../Firebase/Auth'
 import firestore from '../Firebase/Firestore'
+
 import { connect } from 'react-redux';
 import {addUser} from '../actions/Users'
 

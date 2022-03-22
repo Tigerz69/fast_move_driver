@@ -6,7 +6,8 @@ import {
   TextInput,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import auth from '../Firebase/Auth'
@@ -48,7 +49,9 @@ class Account extends Component {
 
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <View style={styles.content}>
-
+              <TouchableOpacity >
+                <Image source={{ uri:this.props.user.image }} style={styles.image} />
+              </TouchableOpacity>
               <TextInput 
                 placeholder="User Name" 
                 style={styles.textInput} 
@@ -115,6 +118,15 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1
+  },
+  image: {
+    borderColor: '#6b4683',
+    borderWidth: 1,
+    width: 100,
+    height: 100,
+    marginBottom:8,
+    borderRadius:50
+
   },
   
 });

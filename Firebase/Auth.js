@@ -1,9 +1,13 @@
-import firebase from "./Initial";
-import 'firebase/firestore';
+import {CONFIG} from './Config'
+import firebase from 'firebase';
 import 'firebase/auth';
 
 class Auth{
- constructor() {
+ constructor()  {
+
+  if(firebase.apps.length===0)
+    firebase.initializeApp(CONFIG)
+    
    this.auth = firebase.auth()
   }
 

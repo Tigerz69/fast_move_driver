@@ -1,12 +1,13 @@
 //Matching.js
 import {View,Text,StatusBar,FlatList,Alert,useState,RefreshControl,Button,TouchableOpacity,StyleSheet } from 'react-native';
 import React,{Component} from "react";
-import firebase from "../Firebase/Initial";
+//import firebase from "../Firebase/Initial";
 import 'firebase/firestore';
 import 'firebase/database'
 import 'firebase/auth';
 import auth from "../Firebase/Auth"
-
+import firebase from 'firebase';
+import 'firebase/firestore';
 //import firestore from '@react-native-firebase/firestore';
 import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
 import * as Location from 'expo-location';

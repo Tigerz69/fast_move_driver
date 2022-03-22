@@ -1,9 +1,15 @@
-import firebase from "./Initial";
+
+import {CONFIG} from './Config'
+import firebase from 'firebase';
 import 'firebase/firestore';
 
 class Firestore{
- constructor() {
-   this.db = firebase.firestore();
+ constructor()  {
+
+  if(firebase.apps.length===0)
+    firebase.initializeApp(CONFIG)
+    
+   this.db = firebase.firestore()
   }
   
   addUser=(id,item,success,unsuccess)=>{
@@ -14,7 +20,7 @@ class Firestore{
       .collection('users')
       .doc(id)
       .set(item)
-      .then(success())
+      .then(success(id))
       .catch(function (error) {
         unsuccess(error);
       });
@@ -50,7 +56,7 @@ class Firestore{
     var ref = this.db.collection('users').doc(id);
     ref
     .update({
-      image:data.image
+      image:data
     })
     .then(()=>{
       success();

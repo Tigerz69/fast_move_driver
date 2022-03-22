@@ -15,6 +15,7 @@ import auth from '../Firebase/Auth'
 import firestore from '../Firebase/Firestore'
 import { Dropdown } from 'react-native-element-dropdown';
 import * as ImagePicker from 'expo-image-picker'; 
+import storage from '../Firebase/Storage'
 
 const options = [
   { value: 'ธนาคารแห่งประเทศไทย', label: 'ธนาคารแห่งประเทศไทย' },
@@ -46,7 +47,9 @@ class Registraion extends Component {
        value:null,
        bankno:null,
        carid:null,
-       image:null
+       image:null,
+       uploadURI:null,
+       id:null
     };
   }
   
@@ -69,16 +72,56 @@ class Registraion extends Component {
       role:'driver',
       image:'',
       status:1,
-      carid:this.state.carid
+      carid:this.state.carid,
+      bank:this.state.value,
+      bankno:this.state.bankno
 
     }
-    console.log(item)
+    console.log('item from registerSuccess',item)
     firestore.addUser(user.uid,item,this.addSuccess,this.addUncsuccess)
+    console.log('id from registerSuccess',user.uid)
   }
 
-  addSuccess=()=>{
+  addSuccess=(id)=>{
+    console.log('id from addSuccess',id)
+    storage.upload(this.state.image,id,this.running,this.uploadSuccess,this.uploadUnsuccess)
+    this.setState({id:id})
+    
+  }
+
+  running=(progress)=>{
+    console.log(progress);
+  }
+
+  uploadSuccess=(url)=>{
+    
+    console.log(url)
+    this.setState({uploadURI:url})
+    
+    this.uploadImage()
+  }
+
+  uploadUnsuccess=(error)=>{
+    console.log(error)
+  }
+  uploadImage=()=>{
+    console.log('id from state and uploadImage',this.state.id)
+    let item ={
+      
+      image:this.state.uploadURI
+    }
+    console.log('state  : ',this.state.uploadURI)
+    firestore.uploadImage(this.state.id,this.state.uploadURI,this.updateSuccess,this.updateUnsuccess)
+  }
+  updateSuccess=()=>{
+    console.log('successful upload image')
     this.props.navigation.navigate('Login')
   }
+
+  updateUnsuccess=(error)=>{
+    console.log(error)
+  }
+
 
   addUncsuccess=(error)=>{
     console.log(error)

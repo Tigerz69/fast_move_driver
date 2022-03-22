@@ -12,7 +12,7 @@ import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
 import getDirections from 'react-native-google-maps-directions'
 import auth from "../Firebase/Auth"
 import 'firebase/firestore';
-import firebase from "../Firebase/Initial";
+import firebase from 'firebase';
 class FullDetail extends Component {
   constructor(props){
     super(props);

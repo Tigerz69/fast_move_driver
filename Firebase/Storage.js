@@ -1,11 +1,14 @@
-
+import {CONFIG} from './Config' 
+import firebase from 'firebase'
 import 'firebase/storage'
-import firebase from "./Initial";
+
 
 
 class Storage{
   constructor(){
-    
+    if(firebase.apps.length===0){
+      firebase.initializeApp(CONFIG)
+    }
     this.storage = firebase.storage();
   }
 
@@ -24,7 +27,10 @@ class Storage{
     }
     ,()=>{
       uploadTask.snapshot.ref.getDownloadURL().then((downloadURL)=>{
+        console.log('downloadURL',downloadURL)
         success(downloadURL)
+      }).catch(function(error){
+        console.log(error)
       })
     })
   }
