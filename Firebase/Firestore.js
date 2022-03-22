@@ -8,12 +8,6 @@ class Firestore{
   
   addUser=(id,item,success,unsuccess)=>{
     item.time = firebase.firestore.FieldValue.serverTimestamp();
-
-    
-    
-    
-    
-
     console.log(item)
     
     this.db
@@ -51,12 +45,12 @@ class Firestore{
         unsuccess(error);
       });
   }
-  uploadProfileUser=(id,data,success,unsuccess)=>{
+  uploadImage=(id,data,success,unsuccess)=>{
     console.log(id)
     var ref = this.db.collection('users').doc(id);
     ref
     .update({
-      profileimage:data.profileimage
+      image:data.image
     })
     .then(()=>{
       success();

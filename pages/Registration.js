@@ -6,12 +6,15 @@ import {
   TextInput,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Image,
+  ScrollView
 } from 'react-native';
 
 import auth from '../Firebase/Auth'
 import firestore from '../Firebase/Firestore'
 import { Dropdown } from 'react-native-element-dropdown';
+import * as ImagePicker from 'expo-image-picker'; 
 
 const options = [
   { value: 'ธนาคารแห่งประเทศไทย', label: 'ธนาคารแห่งประเทศไทย' },
@@ -42,7 +45,8 @@ class Registraion extends Component {
        isFocus:false,
        value:null,
        bankno:null,
-       carid:null
+       carid:null,
+       image:null
     };
   }
   
@@ -95,6 +99,17 @@ class Registraion extends Component {
     }
   }
 
+  pickImage=async()=>{
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes:ImagePicker.MediaTypeOptions.All,
+      allowsEditing:true,
+      quality:1
+    });
+
+    if(!result.cancelled){
+      this.setState({image:result.uri});
+    }
+  }
 
 
 
@@ -106,9 +121,11 @@ class Registraion extends Component {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}>
 
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ScrollView ContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <View style={styles.content}>
-
+              <TouchableOpacity onPress={this.pickImage}>
+                <Image source={{ uri:this.state.image }} style={styles.image} />
+              </TouchableOpacity>
               <TextInput 
                 placeholder="User Name" 
                 style={styles.textInput} 
@@ -185,7 +202,7 @@ class Registraion extends Component {
                   <Text style={{fontSize:16, color:'white'}}>Register</Text>
               </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     );
   }
@@ -239,6 +256,15 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1
+  },
+  image: {
+    borderColor: '#6b4683',
+    borderWidth: 1,
+    width: 100,
+    height: 100,
+    marginBottom:8,
+    borderRadius:50
+
   },
   
 });
