@@ -10,7 +10,7 @@ class Firestore{
     item.time = firebase.firestore.FieldValue.serverTimestamp();
 
     
-    item.profileimage= ''
+    
     
     
 
@@ -50,6 +50,20 @@ class Firestore{
       .catch(function (error) {
         unsuccess(error);
       });
+  }
+  uploadProfileUser=(id,data,success,unsuccess)=>{
+    console.log(id)
+    var ref = this.db.collection('users').doc(id);
+    ref
+    .update({
+      profileimage:data.profileimage
+    })
+    .then(()=>{
+      success();
+    })
+    .catch((error)=>{
+      unsuccess(error)
+    });
   }
 
 }

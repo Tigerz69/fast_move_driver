@@ -8,7 +8,8 @@ const intialState = {
     lastname:'test',
     phone:'12234',
     email:'test',
-    time:'test'
+    time:'test',
+    image:''
  }
 }
 
@@ -25,7 +26,8 @@ const userReducer=(state = intialState,action)=>{
           lastname:action.lastname,
           phone:action.phone,
           email:action.email,
-          time:action.time
+          time:action.time,
+          image:action.image
         }
       }
     default:

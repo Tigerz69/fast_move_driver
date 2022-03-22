@@ -63,7 +63,7 @@ class Registraion extends Component {
       email:this.state.email,
       time:null,
       role:'driver',
-      profileimage:null,
+      image:'',
       status:1,
       carid:this.state.carid
 

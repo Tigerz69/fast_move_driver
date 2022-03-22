@@ -10,9 +10,13 @@ import {ADD_USER,} from './Types'
       lastname:item.lastname,
       phone:item.phone,
       email:item.email,
-      time:item.time
+      time:item.time,
+      image:item.image
     }
   )
+
+
+  
   
   
   
