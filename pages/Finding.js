@@ -54,7 +54,7 @@ class Finding extends Component{
     onRefresh =  () => {
      this.setState({refreshing:true})
      this._getLocationAsync()
-      .then(() => firebase.firestore().collection("orders").where("status","==","unmatch").orderBy("getTime", "asc").get().then((querySnapshot) => {
+      .then(() => firebase.firestore().collection("orders").where("status","==","unmatch").get().then((querySnapshot) => {
         var that = this
         let orders = [];
         console.log('before foreach')
@@ -289,7 +289,7 @@ class Finding extends Component{
     componentDidMount=()=>{
         // Asking for device location permission
       this._getLocationAsync()
-        firebase.firestore().collection("orders").where("status","==","unmatch").orderBy("getTime", "asc").get().then((querySnapshot) => {
+        firebase.firestore().collection("orders").where("status","==","unmatch").get().then((querySnapshot) => {
           var that = this
           let orders = [];
           console.log('before foreach')
