@@ -229,10 +229,12 @@ class Finding extends Component{
         );
       }
       renderTime=(time)=>{
-          let tempdate = new Date(time)
-          var date =tempdate.getDate()
-          var month = tempdate.getMonth()+1
-          var years = tempdate.getFullYear()
+        console.log('time',time)
+        
+          let tempdate = new Date(time.seconds*1000+ time.nanoseconds / 1000000)
+           var date =tempdate.getDate()
+           var month = tempdate.getMonth()+1
+           var years = tempdate.getFullYear()
           var hour = tempdate.getHours()
           var minute = tempdate.getMinutes()
           if (hour < 10){
@@ -243,6 +245,7 @@ class Finding extends Component{
             minute = '0'+minute
           }
           return `${date}/${month}/${years}    ${hour}:${minute}`
+          //return tempdate
       }
 
     calnum=(gnome)=>{
