@@ -6,26 +6,35 @@ import {
   TextInput,
   StyleSheet,
   StatusBar,
-  Alert
+  Alert,
+  Linking
 } from 'react-native';
 import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
 import getDirections from 'react-native-google-maps-directions'
 import auth from "../Firebase/Auth"
 import 'firebase/firestore';
 import firebase from 'firebase';
+import { Ionicons } from "@expo/vector-icons"
 class FullDetail extends Component {
   constructor(props){
     super(props);
     this.db = firebase.firestore();
      this.state = {
-       cusName:null
+       cusName:null,
+       phonenumber:""
     };
   }
   
+  call=()=>{
+    const { phoneNumber } = this.state
+
+    Linking.openURL(`tel:${phoneNumber}`)
+  }
   componentDidMount() {
     const {route} =this.props
     const item=route.params.item
     this.renderName(item.customerID)
+
   }
 
   acceptWork=(id)=>{
@@ -102,8 +111,10 @@ class FullDetail extends Component {
             let last = doc.data().lastname
             //console.log(first)
             //console.log(last)
+
             name=first+"    "+last
             console.log('name',name)
+            this.setState({phoneNumber:doc.data().phone})
             this.setState({cusName:name})
         } else {
             // doc.data() will be undefined in this case
@@ -185,8 +196,17 @@ class FullDetail extends Component {
                   <Paragraph>{"ราคา : "+item.price} </Paragraph>
                   
                 </Card.Content>
-                <Card.Actions style={{justifyContent:'center'}}>
-                  
+                <Card.Actions style={{flexDirection:'column'}}>
+                <View style={styles.containerPhone}>
+                    <TextInput 
+                      onChangeText={(text)=>this.setState({phoneNumber:text})}
+                      style={styles.input} 
+                      placeholder={this.state.phonenumber} 
+                      keyboardType="number-pad"/>
+                    <TouchableOpacity onPress={()=> this.call()}>
+                      <Ionicons name="ios-call" style={styles.callTxt}/>
+                    </TouchableOpacity>
+                  </View>
                   <TouchableOpacity style={styles.button} onPress={()=>this.showAlertConfirm(item.id)}  ><Text style={styles.button}>ขนส่งสำเร็จ</Text>
                   </TouchableOpacity>
                   
@@ -210,6 +230,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDDDDD",
     padding: 10
   },
+  
+  input:{
+    height:50,
+    fontSize:40,
+    color:"#000",
+    marginBottom:20
+  },
+  callTxt:{
+    backgroundColor:"#42b883",
+    padding:10,
+    borderRadius:30,
+    width:80,
+    textAlign:"center",
+    color:"#fff",
+    fontSize:30
+  }
   
 });
 
