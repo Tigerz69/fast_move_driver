@@ -7,7 +7,8 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
-  Linking
+  Linking,
+  ScrollView
 } from 'react-native';
 import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
 import getDirections from 'react-native-google-maps-directions'
@@ -15,6 +16,7 @@ import auth from "../Firebase/Auth"
 import 'firebase/firestore';
 import firebase from 'firebase';
 import { Ionicons } from "@expo/vector-icons"
+
 class FullDetail extends Component {
   constructor(props){
     super(props);
@@ -189,7 +191,7 @@ class FullDetail extends Component {
     //console.log(route.params.item,route.params.num)
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,marginTop: StatusBar.currentHeight || 0}}>
-            
+            <ScrollView>
             <Card 
               >
                 <Card.Title title={item.distance+" Km     "+time} 
@@ -229,7 +231,7 @@ class FullDetail extends Component {
             
           
 
-
+            </ScrollView>
         </View>
     );
   }
