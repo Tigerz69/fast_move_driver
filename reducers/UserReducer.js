@@ -1,4 +1,4 @@
-import {ADD_USER,} from '../actions/Types'
+import {ADD_USER,START_CHAT} from '../actions/Types'
 
 const intialState = {
  user:{
@@ -10,7 +10,8 @@ const intialState = {
     email:'test',
     time:'test',
     image:''
- }
+ },
+ chatid:''
 }
 
 
@@ -29,6 +30,10 @@ const userReducer=(state = intialState,action)=>{
           time:action.time,
           image:action.image
         }
+      }
+      case START_CHAT:
+      return {
+        ...state,chatid: action.id
       }
     default:
       return state

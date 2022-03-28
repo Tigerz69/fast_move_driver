@@ -13,6 +13,7 @@ import Edit from './pages/Edit'
 import Finding from './pages/Finding';
 import ExtendDetail from './pages/ExtendDetail';
 import History from './pages/History';
+import Chat from './pages/Chat'
 import CurrentJob from './pages/CurrentJob';
 import SuccessJob from './pages/SuccessJob';
 import CancelJob from './pages/CancelJob';
@@ -77,6 +78,9 @@ const FullDetailScreen=({navigation,route})=>(
   <FullDetail navigation={navigation}route={route}/>
 )
 
+const ChatScreen=({navigation})=>(
+  <Chat navigation={navigation}/>
+)
 
 
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]);
@@ -167,6 +171,7 @@ const MyStack = ()=>(
     <Stack.Screen name='ExtendDetail' component={ExtendDetailScreen} options={{headerShown:false}}/>
     <Stack.Screen name='MyTabs' component={MyTabs} options={{headerShown:false}}/>
     <Stack.Screen name='FullDetail' component={FullDetailScreen} options={{headerShown:false}}/>
+    <Stack.Screen name='Chat' component={ChatScreen} options={{headerShown:false}}/>
   </Stack.Navigator>
 )
 

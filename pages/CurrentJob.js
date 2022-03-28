@@ -11,10 +11,11 @@ import {
   RefreshControl
 } from 'react-native';
 import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
-
+import { connect } from 'react-redux';
 import auth from "../Firebase/Auth"
 import 'firebase/firestore';
 import firebase from 'firebase';
+import {startChat} from '../actions/Users'
 class CurrentJob extends Component {
   constructor(props){
     super(props);
@@ -116,6 +117,14 @@ class CurrentJob extends Component {
     })
   }
 
+  onPressDetail=(item)=>{
+    let num=item.gnome.length
+    
+    this.props.chat(item.chat)
+    console.log(item.chat,'item.chat')
+    this.props.navigation.navigate('FullDetail',{item:item,num:num,time:this.renderTime(item.getTime)})
+    
+  }
   
 
   render(props) {
@@ -159,7 +168,7 @@ class CurrentJob extends Component {
                                 </Card.Content>
                                 <Card.Actions style={{justifyContent:'space-between'}}>
                                   
-                                  <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('FullDetail',{item:item,num:num,time:this.renderTime(item.getTime)})}   ><Text>รายละเอียด</Text>
+                                  <TouchableOpacity style={styles.button} onPress={()=>this.onPressDetail(item)}   ><Text>รายละเอียด</Text>
                                   </TouchableOpacity>
                                 </Card.Actions>
                                 
@@ -191,5 +200,14 @@ const styles = StyleSheet.create({
   
 });
 
+const mapStateToProps = (state) => (
+    
+  {}
+)
+const mapDispatchToProps = (dispatch) => {
+return{
+chat: (id) => dispatch(startChat(id)),
+}
+}
 
-export default CurrentJob;
+export default connect(mapStateToProps,mapDispatchToProps) (CurrentJob)

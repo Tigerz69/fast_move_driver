@@ -1,4 +1,4 @@
-import {ADD_USER,} from './Types'
+import {ADD_USER,START_CHAT} from './Types'
   
   
   export const addUser=(item)=>(
@@ -12,6 +12,13 @@ import {ADD_USER,} from './Types'
       email:item.email,
       time:item.time,
       image:item.image
+    }
+  )
+  export const startChat = (id) => (
+    {
+      type:START_CHAT,
+      id:id
+      
     }
   )
 

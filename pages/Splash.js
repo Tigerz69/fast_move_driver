@@ -12,7 +12,7 @@ class Splash extends Component {
   constructor(props){
     super(props);
      this.state = {
- 
+      id:null
     };
     
   }
@@ -41,6 +41,7 @@ class Splash extends Component {
     console.log('Current : ', user)
     if(user!=null){
      let id = user.uid
+     this.setState({id:id})
      firestore.getUser(id,this.getUserSuccess,this.getUserUnsuccess)
     }else{
       

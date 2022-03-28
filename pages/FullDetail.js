@@ -102,6 +102,12 @@ class FullDetail extends Component {
         ]  
     );  
   }
+  onPressChat=()=>{
+
+        
+    this.props.navigation.navigate('Chat');
+  
+  }
   renderName=(cusID)=>{
     let name
     this.db.collection("users").doc(cusID).get().then((doc) => {
@@ -203,6 +209,12 @@ class FullDetail extends Component {
                       style={styles.input} 
                       placeholder={this.state.phonenumber} 
                       keyboardType="number-pad"/>
+                      <TouchableOpacity 
+                        
+                        
+                        onPress={this.onPressChat}>
+                          <Ionicons name="ios-chatbubble-sharp" size={24} color="black" style={styles.callTxt} />
+                      </TouchableOpacity >
                     <TouchableOpacity onPress={()=> this.call()}>
                       <Ionicons name="ios-call" style={styles.callTxt}/>
                     </TouchableOpacity>
@@ -245,6 +257,13 @@ const styles = StyleSheet.create({
     textAlign:"center",
     color:"#fff",
     fontSize:30
+  },
+  containerPhone:{
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    margin:10,
+    padding:10
   }
   
 });

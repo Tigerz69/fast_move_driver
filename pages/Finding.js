@@ -11,7 +11,7 @@ import 'firebase/firestore';
 //import firestore from '@react-native-firebase/firestore';
 import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
 import * as Location from 'expo-location';
-
+import firestore from '../Firebase/Firestore'
 import * as TaskManager from "expo-task-manager";
 import axios from 'axios';
 import Loading from './Loading';
@@ -148,6 +148,24 @@ class Finding extends Component{
       .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
               // doc.data() is never undefined for query doc snapshots
+              firestore.addMessageRoom(
+                (id) => {
+                  
+                  //console.log('id in redux',this.props.user.id)
+                  firestore.addChat(
+                    doc.id,
+                    id,
+                    () => {},
+                    (error) => {}
+                  );
+                  
+                  
+                  
+                },
+                (error) => {
+                  console.log(error);
+                }
+              )
               this.db.collection("orders").doc(doc.id).set({
                 driverID: driverid,
                 status: "matched",
