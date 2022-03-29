@@ -50,8 +50,7 @@ class Finding extends Component{
     //     console.error(error);
     // }
     componentWillUnmount=()=>{
-      this.setState({orders:null})
-      this.setState({promises:[]})
+      
     }
   
     onRefresh =  () => {
