@@ -26,6 +26,7 @@ class Storage{
       unsucess(error)
     }
     ,()=>{
+      blob.close();
       uploadTask.snapshot.ref.getDownloadURL().then((downloadURL)=>{
         console.log('downloadURL',downloadURL)
         success(downloadURL)

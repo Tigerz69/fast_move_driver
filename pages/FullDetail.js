@@ -8,7 +8,9 @@ import {
   StatusBar,
   Alert,
   Linking,
-  ScrollView
+  ScrollView,
+  Modal
+  ,Image
 } from 'react-native';
 import { Card,Avatar,Title,Paragraph } from 'react-native-paper';
 import getDirections from 'react-native-google-maps-directions'
@@ -16,6 +18,7 @@ import auth from "../Firebase/Auth"
 import 'firebase/firestore';
 import firebase from 'firebase';
 import { Ionicons } from "@expo/vector-icons"
+import { FontAwesome5 } from '@expo/vector-icons';
 
 class FullDetail extends Component {
   constructor(props){
@@ -23,7 +26,9 @@ class FullDetail extends Component {
     this.db = firebase.firestore();
      this.state = {
        cusName:null,
-       phonenumber:""
+       phonenumber:"",
+       modalVisible2:false,
+       imageBill:null
     };
   }
   
@@ -35,8 +40,34 @@ class FullDetail extends Component {
   componentDidMount() {
     const {route} =this.props
     const item=route.params.item
+    const fieldid=route.params.item.id
     this.renderName(item.customerID)
 
+    this.setState({imageBill:item.imageBill})
+    this.db.collection("orders").where("id","==",fieldid)
+        .onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            console.log('tumrai in driver')
+            if (change.type === "modified") 
+            {
+                
+              this.setState({imageBill:change.doc.data().imageBill})
+                
+                
+            }
+        });
+        
+    });
+  }
+
+  
+  showImage=()=>{
+    
+      this.setModalVisible2(!this.state.modalVisible2)
+    
+  }
+  setModalVisible2=(visible)=>{
+    this.setState({ modalVisible2: visible });
   }
 
   acceptWork=(id)=>{
@@ -180,15 +211,18 @@ class FullDetail extends Component {
     for(let i=0;i<num;i++)
         {
             arr.push(
+              
                 <Paragraph>{`จุดที่ ${i+1} `+item.wayPointList[i].address}</Paragraph>,
                 <Paragraph>{`รายละเอียดงาน : `+item.wayPointList[i].details}</Paragraph>,
                 <Paragraph>{`เบอร์ติดต่อ : `+item.wayPointList[i].phonenumber}</Paragraph>,
-                <TouchableOpacity style={styles.button} onPress={()=>this.handleGetDirections(item.wayPointList[i])}>
+                <TouchableOpacity style={styles.buttonPoint} onPress={()=>this.handleGetDirections(item.wayPointList[i])}>
+                    <FontAwesome5 name="map-marked-alt" size={24} color="black" />
                     <Text >{`จุดที่ ${i+1} `}</Text>
                   </TouchableOpacity>
             )
         }
     //console.log(route.params.item,route.params.num)
+    const{modalVisible2}=this.state
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,marginTop: StatusBar.currentHeight || 0}}>
             <ScrollView>
@@ -206,28 +240,35 @@ class FullDetail extends Component {
                 </Card.Content>
                 <Card.Actions style={{flexDirection:'column'}}>
                 <View style={styles.containerPhone}>
-                    <TextInput 
-                      onChangeText={(text)=>this.setState({phoneNumber:text})}
-                      style={styles.input} 
-                      placeholder={this.state.phonenumber} 
-                      keyboardType="number-pad"/>
-                      <TouchableOpacity 
-                        
-                        
-                        onPress={this.onPressChat}>
-                          <Ionicons name="ios-chatbubble-sharp" size={24} color="black" style={styles.callTxt} />
-                      </TouchableOpacity >
+                  <TouchableOpacity style={styles.buttonLogin}
+                   onPress={this.showImage}>
+                        <Text style={{fontSize:16, color:'white'}}>แสดงรูปชำระเงิน</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={this.onPressChat}>
+                      <Ionicons name="ios-chatbubble-sharp" size={24} color="black" style={styles.callTxt} />
+                  </TouchableOpacity >
                     <TouchableOpacity onPress={()=> this.call()}>
                       <Ionicons name="ios-call" style={styles.callTxt}/>
                     </TouchableOpacity>
-                  </View>
+                </View>
                   <TouchableOpacity style={styles.button} onPress={()=>this.showAlertConfirm(item.id)}  ><Text style={styles.button}>ขนส่งสำเร็จ</Text>
                   </TouchableOpacity>
                   
                 </Card.Actions>
                 
             </Card>
-    
+              <Modal
+                        animationType="slide"
+                        transparent={false}
+                        visible={modalVisible2}
+                        onRequestClose={() => {
+                          
+                          this.setModalVisible2(!modalVisible2)
+                        }}
+                      >
+                          <Image source={{ uri:this.state.imageBill  }} style={styles.imageBill} />
+              </Modal>
             
           
 
@@ -238,11 +279,20 @@ class FullDetail extends Component {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    
+  buttonPoint:{
+    justifyContent:'center',
     alignItems: "center",
     backgroundColor: "#DDDDDD",
-    padding: 10
+    alignSelf:'center',
+    
+    width:'50%'
+  },
+  button: {
+    justifyContent:'center',
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10,
+    margin:10
   },
   
   input:{
@@ -258,15 +308,32 @@ const styles = StyleSheet.create({
     width:80,
     textAlign:"center",
     color:"#fff",
-    fontSize:30
+    fontSize:30,
+    marginLeft:10
   },
   containerPhone:{
     flexDirection:'row',
-    justifyContent:'center',
+    justifyContent:'space-between',
     alignItems:'center',
     margin:10,
     padding:10
-  }
+  },
+  buttonLogin: {
+    
+    justifyContent:"center",
+     alignItems: "center",
+     backgroundColor: "#6b4683",
+     padding:8,
+     margin:8
+   },
+   imageBill: {
+    borderColor: '#6b4683',
+    borderWidth: 1,
+    flex:1
+   
+    
+
+  },
   
 });
 
