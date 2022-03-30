@@ -30,6 +30,7 @@ class FullDetail extends Component {
        modalVisible2:false,
        imageBill:null
     };
+    this._isMounted=false;
   }
   
   call=()=>{
@@ -37,22 +38,26 @@ class FullDetail extends Component {
 
     Linking.openURL(`tel:${phoneNumber}`)
   }
+  componentWillUnmount=()=>{
+    this._isMounted=false;
+   }
   componentDidMount() {
+    this._isMounted=true;
     const {route} =this.props
     const item=route.params.item
     const fieldid=route.params.item.id
     this.renderName(item.customerID)
-
-    this.setState({imageBill:item.imageBill})
+    if(this._isMounted===true){
+    this.setState({imageBill:item.imageBill})}
     this.db.collection("orders").where("id","==",fieldid)
         .onSnapshot((snapshot) => {
           snapshot.docChanges().forEach((change) => {
             console.log('tumrai in driver')
             if (change.type === "modified") 
             {
-                
+              if(this._isMounted===true){
               this.setState({imageBill:change.doc.data().imageBill})
-                
+              }
                 
             }
         });
@@ -267,7 +272,7 @@ class FullDetail extends Component {
                           this.setModalVisible2(!modalVisible2)
                         }}
                       >
-                          <Image source={{ uri:this.state.imageBill  }} style={styles.imageBill} />
+                          <Image source={{ uri:(this.state.imageBill ?this.state.imageBill:null)  }} style={styles.imageBill} />
               </Modal>
             
           
