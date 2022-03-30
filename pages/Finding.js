@@ -316,7 +316,10 @@ class Finding extends Component{
 
     componentDidMount=()=>{
         // Asking for device location permission
-      this._getLocationAsync()
+      this._getLocationAsync().then(
+        ()=>setInterval(()=>{
+        this.updateLocationToRealTime()  
+      },15000))
         firebase.firestore().collection("orders").where("status","==","unmatch").get().then((querySnapshot) => {
           
           let orders = [];
@@ -362,9 +365,7 @@ class Finding extends Component{
           // })   
           
       })
-      setInterval(()=>{
-        this.updateLocationToRealTime()  
-      },15000)
+      
       
       
       
