@@ -20,13 +20,13 @@ const LOCATION_TASK_NAME = "background-location-task";
 const apiKey="AIzaSyCfjk1u2VcAvNfK31VMN581MMNePvR2J-k";
 const Distance_URL="https://maps.googleapis.com/maps/api/distancematrix/json"
 
-
+var updateLo = null
 
 class Finding extends Component{
     constructor(props){
         super(props);
         this.db = firebase.firestore();
-        
+        this.rldb=firebase.database();
         this.state = {
          orders:null,
          selectedID:null,
@@ -38,9 +38,10 @@ class Finding extends Component{
          refreshing:false,
          location:null,
          errorMessage: null,
-         locationloaded: false
-        };
+         locationloaded: false,
          
+        };
+        
     }
     // onResult=(QuerySnapshot)=> {
     //     console.log('Got orders collection result.');
@@ -57,7 +58,7 @@ class Finding extends Component{
      this.setState({refreshing:true})
      this._getLocationAsync()
       .then(() => firebase.firestore().collection("orders").where("status","==","unmatch").get().then((querySnapshot) => {
-        var that = this
+        
         let orders = [];
         console.log('before foreach')
         querySnapshot.forEach((doc) => {
@@ -103,7 +104,8 @@ class Finding extends Component{
     }),
       this.setState({refreshing:false},
       console.log('orders in list state',this.state.orders)
-      ))
+      )),
+      this.updateLocationToRealTime()
     }
   
 
@@ -301,10 +303,13 @@ class Finding extends Component{
         this.setState({location})
         let backPerm = await Location.requestBackgroundPermissionsAsync();
         console.log(backPerm);
+        await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+          accuracy: Location.Accuracy.Balanced,
+        });
       }
     };
     
-
+    
 
 
 
@@ -313,7 +318,7 @@ class Finding extends Component{
         // Asking for device location permission
       this._getLocationAsync()
         firebase.firestore().collection("orders").where("status","==","unmatch").get().then((querySnapshot) => {
-          var that = this
+          
           let orders = [];
           console.log('before foreach')
           querySnapshot.forEach((doc) => {
@@ -357,7 +362,59 @@ class Finding extends Component{
           // })   
           
       })
+      setInterval(()=>{
+        this.updateLocationToRealTime()  
+      },15000)
+      
+      
+      
     }
+
+    // updateLocationToRealTime=()=>{
+    //   let user=auth.getCurrentUser()
+    //   let uid = user.uid
+    //   axios.get(`https://fast-move-or-something-diff.as.r.appspot.com/getLocation`)  
+    //       .then(res => {  
+    //         let data = res.data; 
+            
+    //         console.log('data from api that get',data) 
+    //         // this.setState({distance:data["distance"]})
+    //         // this.setState({duration:data["duration"]})
+    //         // this.setState({gnome:data["gnome"]})
+           
+    //             this.rldb.ref('users/'+uid).set(
+    //               data.location
+    //             )
+            
+            
+            
+    //       })
+      
+
+    // }
+
+    updateLocationToRealTime=()=>{
+      let user=auth.getCurrentUser()
+      let uid = user.uid
+      
+          
+            
+      console.log('data from api that return from post',updateLo) 
+            // this.setState({distance:data["distance"]})
+            // this.setState({duration:data["duration"]})
+            // this.setState({gnome:data["gnome"]})
+           
+                this.rldb.ref('users/'+uid).set(
+                  updateLo
+                )
+            
+            
+            
+        
+      
+
+    }
+    
       
       
     
@@ -425,28 +482,43 @@ class Finding extends Component{
     
   }
 
-// TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-//   if (error) {
-//     // Error occurred - check `error.message` for more details.
-//     console.log("error", error);
-//     return;
-//   }
-//   if (data) {
+TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
+  
+  if (error) {
+    // Error occurred - check `error.message` for more details.
+    console.log("error", error);
+    return;
+  }
+  if (data) {
     
-//     const { locations } = data;
-//     // do something with the locations captured in the background
-//     console.log(locations[0].coords)
-//     let templat = locations[0].coords.latitude;
-//     let templng = locations[0].coords.longitude
-//     let temp ={
-//       latitude:templat,
-//       longitude:templng
-//     }
-//     location=temp
+    const { locations } = data;
+    // do something with the locations captured in the background
+    console.log(locations[0].coords)
+    let templat = locations[0].coords.latitude;
+    let templng = locations[0].coords.longitude
+    let temp ={
+      latitude:templat,
+      longitude:templng
+    }
+    var sendLocation = {
+      method: 'post',
+      url: `https://fast-move-or-something-diff.as.r.appspot.com/sendLocation`,
+
+      data: temp
+    };
     
-//     console.log("locations", temp);
-//   }
-// });
+    axios(sendLocation)
+    .then(function (response) {
+        console.log('success send location')
+        
+        updateLo=response.data.location
+      }).catch(function (error) {
+        console.log(error);
+      });
+    
+    console.log("locations", temp);
+  }
+});
 
 const styles = StyleSheet.create({
   button: {
