@@ -101,12 +101,12 @@ class Finding extends Component{
         //   console.log("orders list",that.state.orders)
         // })   
         
-    }),
-      this.setState({refreshing:false},
-      console.log('orders in list state',this.state.orders)
-      )),
-      this.updateLocationToRealTime()
-    }
+      }),
+        this.setState({refreshing:false},
+        console.log('orders in list state',this.state.orders)
+        )),
+        this.updateLocationToRealTime()
+      }
   
 
   showAlertConfirm(id) {  

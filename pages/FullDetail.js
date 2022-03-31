@@ -75,7 +75,7 @@ class FullDetail extends Component {
     this.setState({ modalVisible2: visible });
   }
 
-  acceptWork=(id)=>{
+  successWork=(id)=>{
     let user = auth.getCurrentUser() 
     let driverid = user.uid
     var queryWork= this.db.collection("orders").where("id","==",id).where("status","==","matched");
@@ -113,7 +113,7 @@ class FullDetail extends Component {
         '',  
         [  
               
-              {text: 'Yes', onPress: () => this.acceptWork(id)}, 
+              {text: 'Yes', onPress: () => this.successWork(id)}, 
               {text: 'No', onPress: () => console.log('No Pressed')} 
         ]  
     );  
