@@ -28,7 +28,8 @@ class FullDetail extends Component {
        cusName:null,
        phonenumber:"",
        modalVisible2:false,
-       imageBill:null
+       imageBill:null,
+       statusOrder:""
     };
     this._isMounted=false;
   }
@@ -41,6 +42,20 @@ class FullDetail extends Component {
   componentWillUnmount=()=>{
     this._isMounted=false;
    }
+   showAlertCancel(){  
+      
+    console.log('alert come')
+    Alert.alert(  
+      'Your Order has cancel',  
+        'Do u want to go back home ?',  
+        [  
+              
+              {text: 'Yes', onPress: () => this.props.navigation.navigate('MyTabs')}, 
+              {text: 'No', onPress: () => console.log('No Pressed')} 
+        ]  
+    );  
+  } 
+
   componentDidMount() {
     this._isMounted=true;
     const {route} =this.props
@@ -55,10 +70,37 @@ class FullDetail extends Component {
             console.log('tumrai in driver')
             if (change.type === "modified") 
             {
-              if(this._isMounted===true){
-              this.setState({imageBill:change.doc.data().imageBill})
+              if(this._isMounted===true)
+              {
+                this.setState({imageBill:change.doc.data().imageBill})
+               
               }
                 
+            }
+        });
+        
+    });
+    this.db.collection("orders").where("id","==",fieldid)
+        .onSnapshot((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            console.log('check status')
+            if(doc.data().status=="matched")
+            {
+              if(this._isMounted===true){
+                this.setState({statusOrder:"รับงานเรียบร้อย"})  
+              }
+            }
+            else if(doc.data().status=="success"){
+              if(this._isMounted===true){
+              this.setState({statusOrder:"เสร็จสิ้น"})
+              }
+              
+            }
+            else if(doc.data().status=="cancel"){
+              if(this._isMounted===true){
+              this.setState({statusOrder:"ยกเลิก"})
+              }
+              this.showAlertCancel()
             }
         });
         
