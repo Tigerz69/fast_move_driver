@@ -29,8 +29,8 @@ class CancelJob extends Component {
   onRefresh =  () => {
     this.setState({refreshing:true})
     let user = auth.getCurrentUser() 
-    let driverid = user.uid
-    firebase.firestore().collection("orders").where("status","==","cancel").where("driverID", "==",driverid).get().then((querySnapshot) => {
+    let driverID = user.uid
+    firebase.firestore().collection("orders").where("status","==","cancel").where("driverID", "==",driverID).get().then((querySnapshot) => {
         
         let orders = [];
         console.log('before foreach')
@@ -38,10 +38,10 @@ class CancelJob extends Component {
             console.log('id doc',doc.id)
             orders.push(doc.data())
             //console.log(doc.data()) 
-            this.setState({orders:orders})
+            
             
         })  
-           
+        this.setState({orders:orders})
         
         // Promise.all(this.state.promises).then(function(data){
         //   that.setState({orders:orders})
@@ -93,29 +93,30 @@ class CancelJob extends Component {
       return `${date}/${month}/${years}    ${hour}:${minute}`
       //return tempdate
   }
+  componentWillUnmount=()=>{
+    this.ordersListener();
+  }
   
-  componentDidMount() {
+  componentDidMount=()=> {
     let user = auth.getCurrentUser() 
-    let driverid = user.uid
-    firebase.firestore().collection("orders").where("status","==","cancel").where("driverID", "==",driverid).get().then((querySnapshot) => {
-        
-        let orders = [];
-        console.log('before foreach')
+    let driverID = user.uid
+    this.ordersListener=this.db.collection("orders").where("status","==","cancel")
+        .onSnapshot((querySnapshot) => {
+          let orders=[];
         querySnapshot.forEach((doc) => {
-            console.log('id doc',doc.id)
-            orders.push(doc.data())
-            //console.log(doc.data()) 
-            this.setState({orders:orders})
             
-        })  
-           
+            console.log('tumrai')
+            if(doc.data().driverID==driverID)
+            {
+                orders.push(doc.data())
+                
+              
+            }
+            
+        });
+        this.setState({orders:orders})  
         
-        // Promise.all(this.state.promises).then(function(data){
-        //   that.setState({orders:orders})
-        //   console.log("orders list",that.state.orders)
-        // })   
-        
-    })
+    });
   }
 
   

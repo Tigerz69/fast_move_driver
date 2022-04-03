@@ -50,13 +50,11 @@ class Finding extends Component{
     // onError=(error)=> {
     //     console.error(error);
     // }
-    componentWillUnmount=()=>{
-      
-    }
+    
   
     onRefresh =  () => {
-     this.setState({refreshing:true})
-     this._getLocationAsync()
+      this.setState({refreshing:true})
+      this._getLocationAsync()
       .then(() => firebase.firestore().collection("orders").where("status","==","unmatch").get().then((querySnapshot) => {
         
         let orders = [];
@@ -83,11 +81,9 @@ class Finding extends Component{
                 console.log(data_temp);
                 if(data_temp.rows[0].elements[0].distance.value<=10000){
                   orders.push(doc.data()); 
-                  this.setState({orders:orders})
-                  
-                }else{
-                  this.setState({orders:orders})
                 }
+                  this.setState({orders:orders})
+                
   
               }).catch(function (error) {
                 console.log(error);
@@ -103,10 +99,11 @@ class Finding extends Component{
         
       }),
         this.setState({refreshing:false},
-        console.log('orders in list state',this.state.orders)
-        )),
+        console.log('orders in list state',this.state.orders),
         this.updateLocationToRealTime()
-      }
+        ))
+        
+    }
   
 
   showAlertConfirm(id) {  
@@ -300,6 +297,9 @@ class Finding extends Component{
         // only check the location if it has been granted
         // you also may want to wrap this in a try/catch as async functions can throw
         let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true  })
+        .catch((error) => {
+          console.log("get current location has problem", error);
+        });
         this.setState({location})
         let backPerm = await Location.requestBackgroundPermissionsAsync();
         console.log(backPerm);
@@ -310,7 +310,9 @@ class Finding extends Component{
     };
     
     
-
+    componentWillUnmount=()=>{
+      this.ordersListener();
+    }
 
 
 
@@ -320,43 +322,39 @@ class Finding extends Component{
         ()=>setInterval(()=>{
         this.updateLocationToRealTime()  
       },15000))
-        firebase.firestore().collection("orders").where("status","==","unmatch").get().then((querySnapshot) => {
-          
-          let orders = [];
-          console.log('before foreach')
-          querySnapshot.forEach((doc) => {
-              console.log('id doc',doc.id)
-              console.log('location from local',this.state.location)
-              //console.log(doc.data()) 
-                let loc = this.state.location
-                console.log(loc)
-                let orilat=loc.coords.latitude
-                let orilng=loc.coords.longitude
-                let deslat=doc.data().wayPointList[0].region.latitude
-                let deslng=doc.data().wayPointList[0].region.longitude
-  
-                let config = {
-                  method: 'get',
-                  url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
-                  headers:{}
-                };
-  
-                axios(config).then((response)=>{
-                  let data_temp =(JSON.parse(JSON.stringify(response.data)))
-                  console.log(data_temp);
-                  if(data_temp.rows[0].elements[0].distance.value<=10000){
-                    orders.push(doc.data()); 
-                    this.setState({orders:orders})
-                    
-                  }else{
-                    this.setState({orders:orders})
-                  }
-    
-                }).catch(function (error) {
-                  console.log(error);
-                })
+      this.ordersListener=this.db.collection("orders").where("status","==","unmatch").onSnapshot((querySnapshot) => {
+
+              let orders=[];
+              querySnapshot.forEach((doc) => {
+                  console.log('id doc',doc.id)
+                  console.log('location from local',this.state.location)
+                  //console.log(doc.data()) 
+                    let loc = this.state.location
+                    console.log(loc)
+                    let orilat=loc.coords.latitude
+                    let orilng=loc.coords.longitude
+                    let deslat=doc.data().wayPointList[0].region.latitude
+                    let deslng=doc.data().wayPointList[0].region.longitude
+      
+                    let config = {
+                      method: 'get',
+                      url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
+                      headers:{}
+                    };
+      
+                    axios(config).then((response)=>{
+                      let data_temp =(JSON.parse(JSON.stringify(response.data)))
+                      console.log(data_temp);
+                      if(data_temp.rows[0].elements[0].distance.value<=10000){
+                        orders.push(doc.data()); 
+                      }
+                      this.setState({orders:orders})
+        
+                    }).catch(function (error) {
+                      console.log(error);
+                    })
               
-          })  
+              })  
              
           
           // Promise.all(this.state.promises).then(function(data){
