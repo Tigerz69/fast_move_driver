@@ -243,7 +243,7 @@ class Finding extends Component{
         return(
           <View style={{alignItems:'center'}}>
               
-              <Text >pull to refresh</Text></View>
+              <Text style={{color:'gray'}} >pull to refresh</Text></View>
         
         );
       }

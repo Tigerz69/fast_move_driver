@@ -253,33 +253,33 @@ class Registraion extends Component {
 
 const styles = StyleSheet.create({
   buttonLogin: {
-   justifyContent:"center",
-    alignItems: "center",
-    backgroundColor: "pink",
-    marginBottom:8,
-    padding:8
-  },
+    justifyContent:"center",
+     alignItems: "center",
+     backgroundColor: "#457B9D",
+     marginBottom:8,
+     padding:8
+   },
   textInput:{
-    borderColor: 'pink',
+    borderColor: '#457B9D',
     borderWidth: 1,
     paddingStart:20,
     marginBottom:8,
     padding:8,
     fontSize:16,
-    color:'pink'
+    color:'#1D3557'
   },
   dropdown:{
-    borderColor: 'pink',
+    borderColor: '#457B9D',
     borderWidth: 1,
     paddingStart:20,
     marginBottom:8,
     padding:8,
     fontSize:16,
-    color:'pink'
+    color:'#1D3557'
   },
   date:{
     borderWidth:1,
-    borderColor: 'pink',
+    borderColor: '#457B9D',
     padding:8,
     paddingStart:20,
      marginBottom:8,
@@ -296,12 +296,15 @@ const styles = StyleSheet.create({
     padding:16,
     margin:16,
     width:"90%"
+    ,backgroundColor:'#F1FAEE'
   },
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor:'#F1FAEE'
+
   },
   image: {
-    borderColor: '#6b4683',
+    borderColor: '#457B9D',
     borderWidth: 1,
     width: 100,
     height: 100,

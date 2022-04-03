@@ -271,7 +271,7 @@ class FullDetail extends Component {
     //console.log(route.params.item,route.params.num)
     const{modalVisible2}=this.state
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,marginTop: StatusBar.currentHeight || 0}}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,marginTop: StatusBar.currentHeight || 0,backgroundColor:'#F1FAEE'}}>
             <ScrollView>
             <Card 
               >
@@ -295,11 +295,11 @@ class FullDetail extends Component {
                     onPress={this.onPressChat}>
                       <Ionicons name="ios-chatbubble-sharp" size={24} color="black" style={styles.callTxt} />
                   </TouchableOpacity >
-                    <TouchableOpacity onPress={()=> this.call()}>
+                    <TouchableOpacity style={{marginLeft:5}} onPress={()=> this.call()}>
                       <Ionicons name="ios-call" style={styles.callTxt}/>
                     </TouchableOpacity>
                 </View>
-                  <TouchableOpacity style={styles.button} onPress={()=>this.showAlertConfirm(item.id)}  ><Text style={styles.button}>ขนส่งสำเร็จ</Text>
+                  <TouchableOpacity style={styles.button} onPress={()=>this.showAlertConfirm(item.id)}  ><Text style={{color:'white'}}>ขนส่งสำเร็จ</Text>
                   </TouchableOpacity>
                   
                 </Card.Actions>
@@ -329,17 +329,21 @@ const styles = StyleSheet.create({
   buttonPoint:{
     justifyContent:'center',
     alignItems: "center",
-    backgroundColor: "#DDDDDD",
+    backgroundColor: "#A8DADC",
     alignSelf:'center',
+    borderRadius:20,
+    width:'25%',
     
-    width:'50%'
   },
   button: {
     justifyContent:'center',
     alignItems: "center",
-    backgroundColor: "#DDDDDD",
+    backgroundColor: "#1D3557",
     padding: 10,
-    margin:10
+    margin:10,
+    borderRadius:20,
+    height:80
+    ,width:120
   },
   
   input:{
@@ -349,14 +353,13 @@ const styles = StyleSheet.create({
     marginBottom:20
   },
   callTxt:{
-    backgroundColor:"#42b883",
+    backgroundColor:"#457B9D",
     padding:10,
     borderRadius:30,
-    width:80,
+    width:60,
     textAlign:"center",
     color:"#fff",
-    fontSize:30,
-    marginLeft:10
+    fontSize:30
   },
   containerPhone:{
     flexDirection:'row',
@@ -369,15 +372,18 @@ const styles = StyleSheet.create({
     
     justifyContent:"center",
      alignItems: "center",
-     backgroundColor: "#6b4683",
+     backgroundColor: "#457B9D",
      padding:8,
-     margin:8
+     margin:8,
+     borderRadius:15
    },
    imageBill: {
     borderColor: '#6b4683',
     borderWidth: 1,
-    flex:1
-   
+    flex:1,
+    width: '100%',
+      height: '100%',
+      resizeMode: 'contain',
     
 
   },

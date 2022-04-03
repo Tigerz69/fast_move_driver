@@ -23,6 +23,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import configureStore from './Store'
 import {Provider} from 'react-redux'
@@ -91,36 +92,18 @@ LogBox.ignoreLogs(['Setting a timer']);
 LogBox.ignoreLogs(['Warning: Each child']);
 LogBox.ignoreLogs(['Warning: Cannot update a component']);
 
-const Drawer = createDrawerNavigator();
-const MyDrawer=()=> (
-  <Drawer.Navigator>
-  
-     <Drawer.Screen  
-        name="Show" 
-        component={AccountScreen}
-        options={{ headerStyle: {backgroundColor: 'pink'},headerTintColor: 'white'}}/> 
 
-   {/* <Drawer.Screen  
-        name="Edit" 
-        component={EditScreen} 
-    options={{ headerStyle: {backgroundColor: '#6b4683'},headerTintColor: 'white'}}/>*/}
-    <Drawer.Screen
-        name="Finding"
-        component={FindingScreen}
-        options={{ headerStyle: {backgroundColor: 'pink'},headerTintColor: 'white'}}/>
-
-  </Drawer.Navigator>
   
-)
+
 const TopTab = createMaterialTopTabNavigator();
 const MyTopTabs=()=>{
   return(
     <TopTab.Navigator>
-        <TopTab.Screen name="CurrentJob" component={CurrentJobScreen} />
-        <TopTab.Screen name="SuccessJob" component={SuccessJobScreen} />
+        <TopTab.Screen name="Current Job" component={CurrentJobScreen} />
+        <TopTab.Screen name="Success Job" component={SuccessJobScreen} />
         
         
-        <TopTab.Screen name="CancelJob" component={CancelJobScreen} />
+        <TopTab.Screen name="Cancel Job" component={CancelJobScreen} />
     </TopTab.Navigator>
   )
 }
@@ -133,19 +116,21 @@ const MyTabs=()=> {
   return (
     
       <Tab.Navigator>
-        <Tab.Screen name="Finding" component={FindingScreen} options={{tabBarLabel: 'Finding',
+        <Tab.Screen name="Finding" component={FindingScreen} options={{headerStyle:{backgroundColor: '#457B9D'},tabBarLabel: 'Finding',headerTitleStyle: { color: 'white' },
           tabBarIcon: ({ color, size }) => (
-            <AntDesign name="find" size={24} color="black" />
+            <AntDesign name="find" size={21} color="black" />
           ),}} />
-        <Tab.Screen name="History" component={MyTopTabs} options={{tabBarLabel: 'History',
+
+        <Tab.Screen name="History" component={MyTopTabs} options={{headerStyle:{backgroundColor: '#457B9D'},tabBarLabel: 'History',headerTitleStyle: { color: 'white' },
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="history" size={24} color="black" />
+            <MaterialIcons name="history" size={28} color="black" />
           ),}} />
         
         
-        <Tab.Screen name="Setting" component={AccountScreen} options={{tabBarLabel: 'Setting',
+        <Tab.Screen name="Account" 
+        component={AccountScreen} options={{headerStyle:{backgroundColor: '#457B9D'},tabBarLabel: 'Account',headerTitleStyle: { color: 'white' },
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ios-settings-outline" size={24} color="black" />
+            <MaterialCommunityIcons name="account-outline" size={28} color="black" />
           ),}} />
       </Tab.Navigator>
     
@@ -161,11 +146,11 @@ const MyStack = ()=>(
     <Stack.Screen 
       name='Register' 
       component={RegisterScreen} 
-      options={{ headerStyle: {backgroundColor: 'pink'},headerTintColor: 'white'}}/>
+      options={{ headerStyle: {backgroundColor: '#457B9D'},headerTintColor: 'white'}}/>
     <Stack.Screen 
       name='Recover' 
       component={RecoverScreen} 
-      options={{ headerStyle: {backgroundColor: 'pink'},headerTintColor: 'white'}}/>
+      options={{ headerStyle: {backgroundColor: '#457B9D'},headerTintColor: 'white'}}/>
     
     <Stack.Screen name='Login' component={LoginScreen} options={{headerShown:false}}/>
     <Stack.Screen name='ExtendDetail' component={ExtendDetailScreen} options={{headerShown:false}}/>

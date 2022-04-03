@@ -87,7 +87,7 @@ class Login extends Component {
     render(props) {
       const { navigation } = this.props;
       return (
-        <View style={{flex:1, justifyContent: 'center', alignItems: 'center',backgroundColor:'#FF84E4' }}>
+        <View style={{flex:1, justifyContent: 'center', alignItems: 'center',backgroundColor:'#F1FAEE' }}>
             
             <Text style={{fontSize:20,color:'black'}}>ลงชื่อเข้าใช้</Text>
 
@@ -118,7 +118,7 @@ class Login extends Component {
             
             <View style={{flexDirection:'row',justifyContent:'flex-end'}}>
               <TouchableOpacity onPress={()=>this.props.navigation.navigate('Recover')}>
-                <Text style={{fontSize:15, color:'pink'}}>ลืมรหัสผ่าน ?</Text>
+                <Text style={{fontSize:15, color:'#457B9D'}}>ลืมรหัสผ่าน ?</Text>
               </TouchableOpacity>
           </View>
 
@@ -132,18 +132,18 @@ class Login extends Component {
     buttonLogin: {
       justifyContent:"center",
       alignItems: "center",
-      backgroundColor: "pink",
+      backgroundColor: "#457B9D",
       marginBottom:8,
       padding:8
     },
     textInput:{
-      borderColor: 'pink',
+      borderColor: '#457B9D',
       borderWidth: 1,
       paddingStart:20,
       marginBottom:8,
       padding:8,
       fontSize:16,
-      color:'pink'
+      color:'#1D3557'
     },
     content:{
       padding:16,
