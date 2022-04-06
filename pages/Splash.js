@@ -25,7 +25,8 @@ class Splash extends Component {
        firstname:data.firstname,
        lastname:data.lastname,
        phone:data.phone,
-       id:this.state.id
+       id:this.state.id,
+       image:data.image
     }
     this.props.add(item)
     this.props.navigation.navigate('MyTabs')

@@ -65,29 +65,33 @@ class Finding extends Component{
             //console.log(doc.data()) 
               let loc = this.state.location
               console.log(loc)
-              let orilat=loc.coords.latitude
-              let orilng=loc.coords.longitude
-              let deslat=doc.data().wayPointList[0].region.latitude
-              let deslng=doc.data().wayPointList[0].region.longitude
-
-              let config = {
-                method: 'get',
-                url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
-                headers:{}
-              };
-
-              axios(config).then((response)=>{
-                let data_temp =(JSON.parse(JSON.stringify(response.data)))
-                console.log(data_temp);
-                if(data_temp.rows[0].elements[0].distance.value<=10000){
-                  orders.push(doc.data()); 
-                }
-                  this.setState({orders:orders})
-                
+              if(loc&&loc.coords){
+                let orilat=loc.coords.latitude
+                let orilng=loc.coords.longitude
+                let deslat=doc.data().wayPointList[0].region.latitude
+                let deslng=doc.data().wayPointList[0].region.longitude
   
-              }).catch(function (error) {
-                console.log(error);
-              })
+                let config = {
+                  method: 'get',
+                  url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
+                  headers:{}
+                };
+  
+                axios(config).then((response)=>{
+                  let data_temp =(JSON.parse(JSON.stringify(response.data)))
+                  console.log(data_temp);
+                  if(data_temp.rows[0].elements[0].distance.value<=10000){
+                    orders.push(doc.data()); 
+                  }
+                  this.setState({orders:orders})
+    
+                }).catch(function (error) {
+                  console.log(error);
+                })
+
+              }else{
+                this.AlertReOpenApp()
+              }
             
         })  
            
@@ -303,9 +307,17 @@ class Finding extends Component{
         this.setState({location})
         let backPerm = await Location.requestBackgroundPermissionsAsync();
         console.log(backPerm);
-        await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-          accuracy: Location.Accuracy.Balanced,
-        });
+        
+          await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+            accuracy: Location.Accuracy.Balanced,
+          }).then(res=>{
+            console.log("success")
+          }).
+        catch(error=>{
+          console.error(error)
+          this.AlertReOpenApp()
+        })
+        
       }
     };
     
@@ -314,7 +326,16 @@ class Finding extends Component{
       this.ordersListener();
     }
 
-
+    AlertReOpenApp() {  
+      Alert.alert(  
+        'Error',  
+          'Please reopen application, The location not properly',  
+          [  
+                
+                {text: 'OK', onPress: () => console.log('OK Pressed')},  
+          ]  
+      );  
+    } 
 
     componentDidMount=()=>{
         // Asking for device location permission
@@ -331,28 +352,34 @@ class Finding extends Component{
                   //console.log(doc.data()) 
                     let loc = this.state.location
                     console.log(loc)
-                    let orilat=loc.coords.latitude
-                    let orilng=loc.coords.longitude
-                    let deslat=doc.data().wayPointList[0].region.latitude
-                    let deslng=doc.data().wayPointList[0].region.longitude
-      
-                    let config = {
-                      method: 'get',
-                      url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
-                      headers:{}
-                    };
-      
-                    axios(config).then((response)=>{
-                      let data_temp =(JSON.parse(JSON.stringify(response.data)))
-                      console.log(data_temp);
-                      if(data_temp.rows[0].elements[0].distance.value<=10000){
-                        orders.push(doc.data()); 
-                      }
-                      this.setState({orders:orders})
+                    if(loc&&loc.coords){
+                      let orilat=loc.coords.latitude
+                      let orilng=loc.coords.longitude
+                      let deslat=doc.data().wayPointList[0].region.latitude
+                      let deslng=doc.data().wayPointList[0].region.longitude
         
-                    }).catch(function (error) {
-                      console.log(error);
-                    })
+                      let config = {
+                        method: 'get',
+                        url: `${Distance_URL}?origins=${orilat}%2C${orilng}&destinations=${deslat}%2C${deslng}&key=${apiKey}`,
+                        headers:{}
+                      };
+        
+                      axios(config).then((response)=>{
+                        let data_temp =(JSON.parse(JSON.stringify(response.data)))
+                        console.log(data_temp);
+                        if(data_temp.rows[0].elements[0].distance.value<=10000){
+                          orders.push(doc.data()); 
+                        }
+                        this.setState({orders:orders})
+          
+                      }).catch(function (error) {
+                        console.log(error);
+                      })
+    
+                    }else{
+                      this.AlertReOpenApp()
+                    }
+                    
               
               })  
              
@@ -520,11 +547,15 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
 });
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
-  },
+  button:{
+    width:100,
+    height:30,
+    borderRadius:20,
+    backgroundColor:'#A8DADC',
+    justifyContent:'center',
+    alignItems:'center'
+    
+  }
   
 });
 

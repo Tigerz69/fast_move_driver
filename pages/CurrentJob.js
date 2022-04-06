@@ -198,7 +198,15 @@ class CurrentJob extends Component {
 }
 
 const styles = StyleSheet.create({
-  
+  button:{
+    width:100,
+    height:30,
+    borderRadius:20,
+    backgroundColor:'#A8DADC',
+    justifyContent:'center',
+    alignItems:'center',
+   
+  }
 });
 
 const mapStateToProps = (state) => (
